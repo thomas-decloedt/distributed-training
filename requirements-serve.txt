@@ -1,0 +1,5 @@
+torch>=2.0
+pydantic>=2.0
+google-cloud-storage
+fastapi
+uvicorn

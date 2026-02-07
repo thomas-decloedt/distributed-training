@@ -1,0 +1,5 @@
+# Copy to backend.tfvars and set bucket.
+# First run: ./scripts/bootstrap_tfstate.sh PROJECT_ID
+# Then: terraform init -backend-config=backend.tfvars
+
+bucket = "PROJECT_ID-tfstate"

@@ -1,0 +1,14 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - Dockerfile
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/train:latest
+      - .
+images:
+  - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/train:latest
+substitutions:
+  _REGION: us-central1
+  _REPO: distributed-training

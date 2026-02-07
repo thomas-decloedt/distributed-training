@@ -1,0 +1,7 @@
+services:
+  train:
+    build: .
+    volumes:
+      - ./data:/app/data
+      - ./checkpoints:/app/checkpoints
+    command: ["--nproc_per_node=4", "src/train.py"]
