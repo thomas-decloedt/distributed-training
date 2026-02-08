@@ -1,9 +1,11 @@
 steps:
   - name: gcr.io/cloud-builders/docker
+    env:
+      - DOCKER_BUILDKIT=1
     args:
       - build
       - -f
-      - Dockerfile
+      - ${_DOCKERFILE}
       - -t
       - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/train:latest
       - .
@@ -12,3 +14,4 @@ images:
 substitutions:
   _REGION: us-central1
   _REPO: distributed-training
+  _DOCKERFILE: Dockerfile.train.cpu

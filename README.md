@@ -19,15 +19,46 @@ uv run pyright
 ## Local Training
 
 ```bash
-docker compose up
+# MNIST on CPU
+docker compose up train
+
+# LoRA on CPU
+docker compose up train-lora
+
+# LoRA on GPU (requires nvidia-docker)
+docker compose --profile gpu up train-gpu
 ```
 
-Or with uv:
+Or with uv from `packages/train`:
 
 ```bash
-uv sync
-uv run torchrun --nproc_per_node=4 src/train.py
+cd packages/train && cp pyproject.cpu.toml pyproject.toml && uv sync
+uv run torchrun --nproc_per_node=4 -m mnist.train   # or -m lora.train
 ```
+
+## Task x Device Matrix
+
+Any task (mnist, lora) on any device (cpu, gpu):
+
+| Task   | Device | Build                    | Run                          |
+|--------|--------|--------------------------|------------------------------|
+| MNIST  | CPU    | `Dockerfile.train.cpu`    | `TASK=mnist` (default)       |
+| LoRA   | CPU    | `Dockerfile.train.cpu`    | `TASK=lora ./scripts/run_lora.sh` |
+| MNIST  | GPU    | `Dockerfile.train.gpu`    | `TASK=mnist`                 |
+| LoRA   | GPU    | `Dockerfile.train.gpu`    | `TASK=lora`                  |
+
+Set `use_gpu = false` in terraform for CPU VMs; `use_gpu = true` for GPU VMs.
+
+## Backends
+
+Training supports multiple backends. Set `BACKEND=gcp` (default) or `BACKEND=runpod`.
+
+| Backend | Build | Provision | Run |
+|---------|-------|-----------|-----|
+| GCP | Cloud Build → Artifact Registry | `cd infra && terraform apply` | `make train` |
+| RunPod | `make build-runpod` or [GitHub Actions](.github/workflows/build-train.yaml) | `make apply-runpod` | `make train-runpod` |
+
+See [docs/runpod.md](docs/runpod.md) for RunPod setup when GCP quota is unavailable.
 
 ## GCP (Vertex AI + Model Registry + Cloud Run)
 
@@ -76,6 +107,12 @@ curl -X POST $(cd infra && terraform output -raw inference_url)/predict \
 ## Cost
 
 Use e2-small or e2-medium; `terraform destroy` when done.
+
+## GPU Training
+
+GPU is enabled by default. To use CPU instead, set `use_gpu = false` in `infra/terraform.tfvars`.
+
+See [docs/gpu-training.md](docs/gpu-training.md) for the full GPU setup guide, cost notes, and troubleshooting.
 
 ## Docs
 

@@ -1,5 +1,11 @@
-project_id       = "your-gcp-project-id"
-region           = "us-central1"
-zone             = "us-central1-a"
-machine_type     = "e2-medium"
-cloud_build_user = "your-email@gmail.com"
+project_id        = "your-gcp-project-id"
+region            = "us-central1"
+zone              = "us-central1-a"
+# Set false when using RunPod so only core (bucket, AR, Cloud Run) is created
+enable_gcp_backend = true
+# master_zone     = ""      # optional; different zone improves GPU capacity odds
+# worker_zone     = ""
+machine_type      = "e2-medium"
+use_gpu           = true    # set false for CPU training
+accelerator_type  = "nvidia-tesla-t4"
+cloud_build_user  = "your-email@gmail.com"

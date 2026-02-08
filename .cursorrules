@@ -1,0 +1,11 @@
+# Distributed Training — Coding Standards
+
+## Strict typing (non-negotiable)
+- All functions have explicit parameter and return types
+- Use `py.typed` marker in packages for PEP 561
+- Run pyright/mypy in strict mode
+
+## Pydantic models, not dicts
+- Never use `dict` as input or output of functions
+- Use Pydantic `BaseModel` for structured data
+- Avoids syntax errors (e.g. missing `)`) and enables validation

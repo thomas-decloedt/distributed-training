@@ -8,15 +8,27 @@ From the project root (not `infra/`):
 
 ```bash
 cd /path/to/distributed-training
+# MNIST (default) or LoRA on CPU
 ./scripts/run_gcp.sh
+
+# LoRA on CPU (when use_gpu=false in terraform)
+TASK=lora ./scripts/run_lora.sh
 ```
 
 This will:
-- Build and push the training image via Cloud Build
+- Build and push the training image via Cloud Build (MNIST by default; use `TASK=lora ./scripts/run_lora.sh` for LoRA)
 - SSH to master and worker VMs
-- Run 2-node DDP training on MNIST
-- Upload model to `gs://{project_id}-distributed-training/models/latest/model.pt`
+- Run 2-node DDP training on MNIST (or LoRA when TASK=lora)
+- Upload model to `gs://{project_id}-distributed-training/models/latest/model.pt` (or `models/lora/latest/` for LoRA)
 - Log metrics to Vertex AI Experiments
+
+**Task x device matrix (DRY):** `Dockerfile.train.cpu` and `Dockerfile.train.gpu` each support any task (mnist|lora):
+- `DEVICE=cpu` + `TASK=mnist` — MNIST on CPU
+- `DEVICE=cpu` + `TASK=lora` — LoRA on CPU
+- `DEVICE=gpu` + `TASK=mnist` — MNIST on GPU
+- `DEVICE=gpu` + `TASK=lora` — LoRA on GPU
+
+**Packages layout:** `packages/common/`, `packages/mnist/`, `packages/lora/`, `packages/train/`, `packages/serve/`
 
 ## 2. Check Metrics
 

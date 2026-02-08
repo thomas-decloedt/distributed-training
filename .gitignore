@@ -7,8 +7,11 @@ checkpoints/
 infra/.terraform/
 infra/*.tfstate*
 infra/*.tfstate.backup
+infra/runpod/.terraform/
+infra/runpod/*.tfstate*
 *.tfvars
 !*.tfvars.example
+*-sa-key.json
 infra/backend.tfvars
 personal/
 docs/portfolio-roadmap.md

@@ -1,0 +1,13 @@
+runpod_api_key  = "YOUR_RUNPOD_API_KEY"
+docker_image    = "YOUR_DOCKERHUB_USER/distributed-training-train:latest"
+gcp_project_id  = "your-gcp-project-id"
+gcs_bucket      = "your-gcp-project-id-distributed-training"
+gcp_region      = ""     # GCP region for Vertex/AR; must match core (e.g. europe-west4). Empty = us-central1
+single_node     = true   # true = 1 pod with 2 GPUs (cheapest). false = 2 pods with 1 GPU each (multi-node)
+
+# GCP service account key for Vertex AI + GCS upload.
+# Create SA with roles/storage.objectAdmin + roles/aiplatform.admin
+# gcp_sa_key_path = "./gcp-sa-key.json"
+
+# Workaround when RunPod proxy SSH (POD_ID@ssh.runpod.io) fails: inject your key for direct SSH.
+# ssh_public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... your@email.com"

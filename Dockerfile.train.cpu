@@ -1,0 +1,18 @@
+# Training on CPU: any TASK (mnist|lora)
+# Build: docker build -f Dockerfile.train.cpu -t train .
+# Uses uv.lock for reproducible installs. Cache mount speeds repeated builds.
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+WORKDIR /app
+
+COPY packages ./packages
+# Cache mount speeds up repeated builds (DOCKER_BUILDKIT=1)
+RUN --mount=type=cache,target=/root/.cache/uv \
+    cd packages/train && cp pyproject.cpu.toml pyproject.toml && uv sync --no-dev
+
+WORKDIR /app/packages/train
+ENTRYPOINT ["uv", "run", "torchrun"]

@@ -1,7 +1,36 @@
 services:
   train:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.train.cpu
     volumes:
-      - ./data:/app/data
-      - ./checkpoints:/app/checkpoints
-    command: ["--nproc_per_node=4", "src/train.py"]
+      - ./data:/app/packages/train/data
+      - ./checkpoints:/app/packages/train/checkpoints
+    command: ["--nproc_per_node=4", "-m", "mnist.train"]
+
+  train-lora:
+    build:
+      context: .
+      dockerfile: Dockerfile.train.cpu
+    volumes:
+      - ./data:/app/packages/train/data
+      - ./checkpoints:/app/packages/train/checkpoints
+    command: ["--nproc_per_node=4", "-m", "lora.train"]
+
+  train-gpu:
+    profiles:
+      - gpu
+    build:
+      context: .
+      dockerfile: Dockerfile.train.gpu
+    volumes:
+      - ./data:/app/packages/train/data
+      - ./checkpoints:/app/packages/train/checkpoints
+    command: ["--nproc_per_node=1", "-m", "lora.train"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

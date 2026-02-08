@@ -1,0 +1,17 @@
+.venv
+.uv
+__pycache__
+*.pyc
+.git
+.gitignore
+*.md
+!README.md
+infra/.terraform
+infra/*.tfstate*
+data
+checkpoints
+notebooks
+*.ipynb
+.env
+.venv
+packages/*/.venv
