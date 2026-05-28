@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-common = { path = "../common" }
+common = { workspace = true }
 # torch source inherited from parent (train) for device flexibility
 
 [build-system]

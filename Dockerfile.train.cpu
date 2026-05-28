@@ -9,10 +9,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl \
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 WORKDIR /app
 
-COPY packages ./packages
+COPY pyproject.toml uv.lock ./
+COPY libs ./libs
+COPY projects ./projects
 # Cache mount speeds up repeated builds (DOCKER_BUILDKIT=1)
 RUN --mount=type=cache,target=/root/.cache/uv \
-    cd packages/train && cp pyproject.cpu.toml pyproject.toml && uv sync --no-dev
+    uv sync --no-dev --package train
 
-WORKDIR /app/packages/train
-ENTRYPOINT ["uv", "run", "torchrun"]
+WORKDIR /app/projects/train
+ENTRYPOINT ["uv", "run", "--package", "train", "torchrun"]

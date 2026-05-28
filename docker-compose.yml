@@ -4,8 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile.train.cpu
     volumes:
-      - ./data:/app/packages/train/data
-      - ./checkpoints:/app/packages/train/checkpoints
+      - ./data:/app/projects/train/data
+      - ./checkpoints:/app/projects/train/checkpoints
     command: ["--nproc_per_node=4", "-m", "mnist.train"]
 
   train-lora:
@@ -13,8 +13,8 @@ services:
       context: .
       dockerfile: Dockerfile.train.cpu
     volumes:
-      - ./data:/app/packages/train/data
-      - ./checkpoints:/app/packages/train/checkpoints
+      - ./data:/app/projects/train/data
+      - ./checkpoints:/app/projects/train/checkpoints
     command: ["--nproc_per_node=4", "-m", "lora.train"]
 
   train-gpu:
@@ -24,8 +24,8 @@ services:
       context: .
       dockerfile: Dockerfile.train.gpu
     volumes:
-      - ./data:/app/packages/train/data
-      - ./checkpoints:/app/packages/train/checkpoints
+      - ./data:/app/projects/train/data
+      - ./checkpoints:/app/projects/train/checkpoints
     command: ["--nproc_per_node=1", "-m", "lora.train"]
     deploy:
       resources:

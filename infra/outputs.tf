@@ -41,16 +41,16 @@ output "worker_zone" {
 }
 
 output "master_ip" {
-  value       = try(google_compute_instance.master[0].network_interface[0].access_config[0].nat_ip, null)
+  value       = try(module.gcp[0].master_ip, null)
   description = "Master node external IP (null when using RunPod)"
 }
 
 output "worker_ip" {
-  value       = try(google_compute_instance.worker[0].network_interface[0].access_config[0].nat_ip, null)
+  value       = try(module.gcp[0].worker_ip, null)
   description = "Worker node external IP (null when using RunPod)"
 }
 
 output "master_internal_ip" {
-  value       = try(google_compute_instance.master[0].network_interface[0].network_ip, null)
+  value       = try(module.gcp[0].master_internal_ip, null)
   description = "Master node internal IP for torchrun rendezvous (null when using RunPod)"
 }

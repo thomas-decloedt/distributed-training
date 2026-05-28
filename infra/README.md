@@ -1,10 +1,10 @@
 # Infrastructure
 
-Terraform layout:
+Terraform layout (all applied from this root except RunPod):
 
-- **Core** (shared platform): GCS bucket, Artifact Registry, serve image build, Cloud Run. Always applied from this root; used by both GCP VMs and RunPod.
-- **GCP backend** (optional): VMs, firewall, IAM for training. Enabled when `enable_gcp_backend = true` (default).
-- **RunPod**: Separate stack in `runpod/`; its own state and tfvars. Uses the same project and bucket as core (set `gcp_project_id` and `gcs_bucket` from core outputs).
+- **core/** – Shared platform: GCS bucket, Artifact Registry, serve image build, Cloud Run. Always applied; used by both GCP VMs and RunPod.
+- **gcp/** – GCP compute backend (optional): VMs, firewall, IAM for training. Enabled when `enable_gcp_backend = true` (default). Child module called from root; no separate state.
+- **runpod/** – Separate stack; its own state and tfvars. RunPod provider and pods. Uses the same project and bucket as core (set `gcp_project_id` and `gcs_bucket` from core outputs).
 
 ## When to set `enable_gcp_backend`
 

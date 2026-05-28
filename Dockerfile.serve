@@ -7,13 +7,15 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 WORKDIR /app
 
-COPY packages ./packages
-RUN cd packages/serve && uv sync --no-dev --extra mnist
+COPY pyproject.toml uv.lock ./
+COPY libs ./libs
+COPY projects ./projects
+RUN uv sync --no-dev --package serve --extra mnist
 
 ENV MODEL_CASE=mnist
 ENV MODEL_PATH=/app/checkpoints/model.pt
 
 EXPOSE 8080
 
-WORKDIR /app/packages/serve
-CMD ["uv", "run", "uvicorn", "serve.app:app", "--host", "0.0.0.0", "--port", "8080"]
+WORKDIR /app/projects/serve
+CMD ["uv", "run", "--package", "serve", "uvicorn", "serve.app:app", "--host", "0.0.0.0", "--port", "8080"]

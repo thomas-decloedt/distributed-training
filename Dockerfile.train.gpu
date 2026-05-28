@@ -5,11 +5,17 @@ FROM pytorch/pytorch:2.10.0-cuda12.6-cudnn9-runtime
 RUN apt-get update && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/*
 
+RUN pip install --no-cache-dir uv
+
 WORKDIR /app
 
-COPY packages ./packages
-RUN cd packages/train && cp pyproject.gpu.toml pyproject.toml \
-    && pip install --no-cache-dir --break-system-packages -e ../common -e ../mnist -e ../lora -e .
+COPY pyproject.toml uv.lock ./
+COPY libs ./libs
+COPY projects ./projects
+# Use GPU torch index for train package
+RUN cp projects/train/pyproject.gpu.toml projects/train/pyproject.toml \
+    && uv lock --package train \
+    && uv sync --no-dev --package train
 
-WORKDIR /app/packages/train
-ENTRYPOINT ["torchrun"]
+WORKDIR /app/projects/train
+ENTRYPOINT ["uv", "run", "--package", "train", "torchrun"]

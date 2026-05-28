@@ -16,8 +16,8 @@ mnist = ["mnist"]
 # lora = ["lora"]  # Separate serve image for lora (CUDA torch conflict with mnist)
 
 [tool.uv.sources]
-common = { path = "../common" }
-mnist = { path = "../mnist" }
+common = { workspace = true }
+mnist = { workspace = true }
 # Force CPU torch for serve; direct deps ensure override applies over mnist's transitive torch
 torch = { index = "pytorch-cpu" }
 torchvision = { index = "pytorch-cpu" }

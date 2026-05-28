@@ -7,7 +7,8 @@ on:
     branches: [main]
     paths:
       - "Dockerfile.train.*"
-      - "packages/**"
+      - "libs/**"
+      - "projects/**"
       - ".github/workflows/build-train.yaml"
   workflow_dispatch:
 

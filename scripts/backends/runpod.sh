@@ -91,7 +91,7 @@ if [ "$SINGLE_NODE" = "true" ]; then
   TORCHRUN_ARGS="--nnodes=1 --nproc_per_node=2 -m ${TRAIN_MODULE}"
 fi
 
-WORK_DIR="/app/packages/train"
+WORK_DIR="/app/projects/train"
 # Source GCP env file written by Terraform entrypoint (RunPod may not inject env with custom entrypoint)
 GCP_ENV_PREFIX="source /root/.gcp_env 2>/dev/null && "
 

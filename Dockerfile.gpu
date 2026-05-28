@@ -1,24 +1,19 @@
-FROM nvidia/cuda:12.1-runtime-ubuntu22.04
+# Legacy alias: same as Dockerfile.train.gpu (use that for clarity).
+FROM pytorch/pytorch:2.10.0-cuda12.6-cudnn9-runtime
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    software-properties-common \
-    && add-apt-repository ppa:deadsnakes/ppa \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends \
-    python3.11 \
-    python3.11-venv \
-    python3.11-distutils \
-    curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && ln -sf /usr/bin/python3.11 /usr/bin/python
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+RUN pip install --no-cache-dir uv
 
 WORKDIR /app
 
-COPY pyproject.gpu.toml pyproject.toml
-COPY README.md ./
-COPY src ./src
-RUN uv sync --no-dev
+COPY pyproject.toml uv.lock ./
+COPY libs ./libs
+COPY projects ./projects
+RUN cp projects/train/pyproject.gpu.toml projects/train/pyproject.toml \
+    && uv lock --package train \
+    && uv sync --no-dev --package train
 
-ENTRYPOINT ["uv", "run", "torchrun"]
+WORKDIR /app/projects/train
+ENTRYPOINT ["uv", "run", "--package", "train", "torchrun"]
